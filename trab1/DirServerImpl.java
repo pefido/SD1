@@ -70,7 +70,10 @@ public class DirServerImpl
       if( args.length > 0)
         path = args[0];
 
-      System.getProperties().put( "java.security.policy", "policy.all");
+    	  File policy = new File("policy.all");
+    	  if(policy.exists())
+    		  System.getProperties().put( "java.security.policy", "policy.all");
+    	  else System.getProperties().put( "java.security.policy", "src/policy.all");
 
       if( System.getSecurityManager() == null) {
         System.setSecurityManager( new RMISecurityManager());
