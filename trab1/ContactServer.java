@@ -7,25 +7,34 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ContactServer extends UnicastRemoteObject implements IContactServer{
 	
-	private List<String> fileServers;
+	private Map<String, FileServerR> fileServers;
 	
 	public ContactServer() throws RemoteException{
-		fileServers = new LinkedList<String>();
+		fileServers = new HashMap<String, FileServerR>();
 	}
 	
-	public boolean addFileServer(String serverName) throws RemoteException{
-		fileServers.add(serverName);
-		System.out.println("adicionado " + serverName);
+	public boolean addFileServer(String serverName, String serverAdress) throws RemoteException{
+		if(fileServers.containsKey(serverName))
+			fileServers.get(serverName).addServer(serverAdress);
+		else 
+			fileServers.put(serverName, new FileServerR(serverName, serverAdress));
+		System.out.println(serverAdress + " adicionado como " + serverName);
 		return true;
 	}
 	
-	public Object[] getFileServers() throws RemoteException{
-		return fileServers.toArray();
+	public String[] getFileServers() throws RemoteException{
+		return fileServers.keySet().toArray(new String[0]);
+	}
+	
+	public String[] getFileServerWSN(String serverName) throws RemoteException{
+		return fileServers.get(serverName).getServersA();
 	}
 	
 	

@@ -93,13 +93,14 @@ public class DirServerImpl
       }
 
       DirServerImpl server = new DirServerImpl( path);
-      Naming.rebind( "/serverName", server);
+      String adress = "/" + serverName + System.currentTimeMillis();
+      Naming.rebind( adress, server);
       System.out.println( "DirServer bound in registry");
       
       //ligar ao contactServer
       try {
 			IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-			if(contactServer.addFileServer(serverName) == true)
+			if(contactServer.addFileServer(serverName, adress) == true)
 				System.out.println("server ligado ao contact");
 		} catch( Exception e) {
 			System.err.println( "Erro: " + e.getMessage());
