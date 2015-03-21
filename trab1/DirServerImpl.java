@@ -67,8 +67,14 @@ public class DirServerImpl
   public static void main( String args[]) throws Exception {
     try {
       String path = ".";
-      if( args.length > 0)
-        path = args[0];
+     /* if( args.length > 0)
+        path = args[0];*/
+      if(args.length != 2){
+    	  System.out.println("Use: java DirServerImpl server_name contact_server_URL");
+    	  System.exit(0);
+      }
+      String serverName = args[0];
+      String contactServerURL = args[1];
 
     	  File policy = new File("policy.all");
     	  if(policy.exists())
@@ -87,8 +93,18 @@ public class DirServerImpl
       }
 
       DirServerImpl server = new DirServerImpl( path);
-      Naming.rebind( "/myFileServer", server);
+      Naming.rebind( "/serverName", server);
       System.out.println( "DirServer bound in registry");
+      
+      //ligar ao contactServer
+      try {
+			IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
+			if(contactServer.addFileServer(serverName) == true)
+				System.out.println("server ligado ao contact");
+		} catch( Exception e) {
+			System.err.println( "Erro: " + e.getMessage());
+		}
+      
     } catch( Throwable th) {
       th.printStackTrace();
     }
