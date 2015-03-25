@@ -63,6 +63,37 @@ public class DirServerImpl
     } else
       throw new InfoNotFoundException( "Directory not found :" + path);
   }
+  
+  public void makeDir(String name) throws SecurityException, RemoteException{
+	  File dir = new File(name);
+	  if(!dir.exists()){
+		  dir.mkdir();
+		  System.out.println("created directory: " + name);
+	  }
+	  else 
+		  System.out.println("directory " + name + " alredy exists!");
+  }
+  
+  public String removeDir(String name) throws SecurityException, RemoteException{
+	  String result = "";
+	  File dir = new File(name);
+	  if(dir.exists()){
+		  if(dir.list().length > 0){
+			  result = "the directory is not empty!";
+			  System.out.println(result);
+		  }
+		  else{
+			  dir.delete();
+			  result = "directory " + name + " has been removed";
+			  System.out.println(result);
+		  }
+	  }
+	  else{
+		  result = "directory " + name + " does not exist!";
+		  System.out.println(result);
+	  }
+	  return result;
+  }
 
   public static void main( String args[]) throws Exception {
     try {
@@ -93,14 +124,14 @@ public class DirServerImpl
       }
 
       DirServerImpl server = new DirServerImpl( path);
-      String adress = "/" + serverName + System.currentTimeMillis();
+      String adress = serverName + System.currentTimeMillis();
       Naming.rebind( adress, server);
       System.out.println( "DirServer bound in registry");
       
       //ligar ao contactServer
       try {
 			IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-			if(contactServer.addFileServer(serverName, adress) == true)
+			if(contactServer.addFileServer(serverName, "/" + adress) == true)
 				System.out.println("server ligado ao contact");
 		} catch( Exception e) {
 			System.err.println( "Erro: " + e.getMessage());

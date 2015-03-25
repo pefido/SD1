@@ -37,6 +37,9 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
 		return fileServers.get(serverName).getServersA();
 	}
 	
+	public String getFileServerURL(String name) throws RemoteException{
+		return fileServers.get(name).getServersA()[0];
+	}
 	
 
 	public static void main(String[] args) {

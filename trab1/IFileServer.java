@@ -22,5 +22,9 @@ public interface IFileServer extends Remote
 	 * transferir um ficheiro do server
 	 */
 	public byte[] transferFile(String path, String name) throws RemoteException, InfoNotFoundException, IOException;
+	
+	public void makeDir(String name) throws SecurityException, RemoteException;
+	
+	public String removeDir(String name) throws SecurityException, RemoteException;
 
 }

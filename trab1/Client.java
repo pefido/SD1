@@ -1,7 +1,9 @@
 package trab1;
 
 import java.io.RandomAccessFile;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
@@ -20,6 +22,30 @@ public class Client {
 		String result = "servers named " + serverName + ":";
 		for(String a: serversWSN)
 			result += " " + a + " ";
+		System.out.println(result);
+	}
+	
+	public static void mkdir(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException{
+		String fileServerURL = contactServer.getFileServerURL(serverName);
+		IFileServer fileServer = (IFileServer)Naming.lookup("//localhost" + fileServerURL);
+		fileServer.makeDir(dirName);
+		System.out.println("directory " + dirName + " created in the " + serverName + " server");
+	}
+	
+	public static void rmdir(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException{
+		String fileServerURL = contactServer.getFileServerURL(serverName);
+		IFileServer fileServer = (IFileServer)Naming.lookup("//localhost" + fileServerURL);
+		System.out.println(fileServer.removeDir(dirName));
+	}
+	
+	public static void ls(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException, InfoNotFoundException{
+		String fileServerURL = contactServer.getFileServerURL(serverName);
+		IFileServer fileServer = (IFileServer)Naming.lookup("//localhost" + fileServerURL);
+		String[] tmp = fileServer.dir(dirName);
+		String result = "";
+		for(String a: tmp){
+			result += a + " ";
+		}
 		System.out.println(result);
 	}
 
@@ -48,7 +74,22 @@ public class Client {
 					default: ;
 						if(command.contains("servers"))
 							getServersWSN(contactServer, command.substring(8));
-						else 
+						else if(command.contains("mkdir")){
+							command = command.substring(6);
+							String[] tmp = command.split("@");
+							mkdir(contactServer, tmp[0], tmp[1]);
+						}
+						else if(command.contains("rmdir")){
+							command = command.substring(6);
+							String[] tmp = command.split("@");
+							rmdir(contactServer, tmp[0], tmp[1]);
+						}
+						else if(command.contains("ls")){
+							command = command.substring(3);
+							String[] tmp = command.split("@");
+							ls(contactServer, tmp[0], tmp[1]);
+						}
+						else
 							System.out.println("invalid command");
 						break;
 				}
