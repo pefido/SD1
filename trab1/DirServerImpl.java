@@ -63,54 +63,54 @@ public class DirServerImpl
     } else
       throw new InfoNotFoundException( "Directory not found :" + path);
   }
-  
+
   public void makeDir(String name) throws SecurityException, RemoteException{
-	  File dir = new File(name);
-	  if(!dir.exists()){
-		  dir.mkdir();
-		  System.out.println("created directory: " + name);
-	  }
-	  else 
-		  System.out.println("directory " + name + " alredy exists!");
+    File dir = new File(name);
+    if(!dir.exists()){
+      dir.mkdir();
+      System.out.println("created directory: " + name);
+    }
+    else
+      System.out.println("directory " + name + " alredy exists!");
   }
-  
+
   public String removeDir(String name) throws SecurityException, RemoteException{
-	  String result = "";
-	  File dir = new File(name);
-	  if(dir.exists()){
-		  if(dir.list().length > 0){
-			  result = "the directory is not empty!";
-			  System.out.println(result);
-		  }
-		  else{
-			  dir.delete();
-			  result = "directory " + name + " has been removed";
-			  System.out.println(result);
-		  }
-	  }
-	  else{
-		  result = "directory " + name + " does not exist!";
-		  System.out.println(result);
-	  }
-	  return result;
+    String result = "";
+    File dir = new File(name);
+    if(dir.exists()){
+      if(dir.list().length > 0){
+        result = "the directory is not empty!";
+        System.out.println(result);
+      }
+      else{
+        dir.delete();
+        result = "directory " + name + " has been removed";
+        System.out.println(result);
+      }
+    }
+    else{
+      result = "directory " + name + " does not exist!";
+      System.out.println(result);
+    }
+    return result;
   }
 
   public static void main( String args[]) throws Exception {
     try {
       String path = ".";
-     /* if( args.length > 0)
-        path = args[0];*/
+      /* if( args.length > 0)
+         path = args[0];*/
       if(args.length != 2){
-    	  System.out.println("Use: java DirServerImpl server_name contact_server_URL");
-    	  System.exit(0);
+        System.out.println("Use: java DirServerImpl server_name contact_server_URL");
+        System.exit(0);
       }
       String serverName = args[0];
       String contactServerURL = args[1];
 
-    	  File policy = new File("policy.all");
-    	  if(policy.exists())
-    		  System.getProperties().put( "java.security.policy", "policy.all");
-    	  else System.getProperties().put( "java.security.policy", "src/policy.all");
+      File policy = new File("policy.all");
+      if(policy.exists())
+        System.getProperties().put( "java.security.policy", "policy.all");
+      else System.getProperties().put( "java.security.policy", "src/policy.all");
 
       if( System.getSecurityManager() == null) {
         System.setSecurityManager( new RMISecurityManager());
@@ -127,16 +127,16 @@ public class DirServerImpl
       String adress = serverName + System.currentTimeMillis();
       Naming.rebind( adress, server);
       System.out.println( "DirServer bound in registry");
-      
+
       //ligar ao contactServer
       try {
-			IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-			if(contactServer.addFileServer(serverName, "/" + adress) == true)
-				System.out.println("server ligado ao contact");
-		} catch( Exception e) {
-			System.err.println( "Erro: " + e.getMessage());
-		}
-      
+        IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
+        if(contactServer.addFileServer(serverName, "/" + adress) == true)
+          System.out.println("server ligado ao contact");
+      } catch( Exception e) {
+        System.err.println( "Erro: " + e.getMessage());
+      }
+
     } catch( Throwable th) {
       th.printStackTrace();
     }

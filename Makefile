@@ -4,7 +4,9 @@ JCC = javacc
 DIR = Parser
 
 default: clean javac
-server: clean javac s
+server1: default s
+server2: default z
+client: default c
 
 clean:
 	rm -f ./*.class
@@ -16,4 +18,16 @@ s:
 	@echo "------------------"
 	@echo " Server           "
 	@echo "------------------"
-	$(J) trab1.DirServerImpl
+	$(J) trab1.ContactServer
+
+z:
+	@echo "------------------"
+	@echo " Client           "
+	@echo "------------------"
+	$(J) trab1.DirServerImpl SD localhost
+
+c:
+	@echo "------------------"
+	@echo " Client           "
+	@echo "------------------"
+	$(J) trab1.Client localhost/myContactServer
