@@ -23,7 +23,13 @@ public interface IFileServer extends Remote {
   public byte[] transferFile(String path, String name) throws RemoteException, InfoNotFoundException, IOException;
 
   public void makeDir(String name) throws SecurityException, RemoteException;
-
+  
   public String removeDir(String name) throws SecurityException, RemoteException;
+  
+  public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException;
+  
+  public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException;
+  
+  public void rm(String path) throws InfoNotFoundException, IOException;
 
 }

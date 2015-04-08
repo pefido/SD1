@@ -59,6 +59,44 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     } else
       throw new InfoNotFoundException("Directory not found :" + path);
   }
+  
+  public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException{
+    File dir = new File(basePath, path);
+    if (dir.exists()) {
+      File f = new File(dir, name);
+      if (f.exists()) {
+        RandomAccessFile f2 = new RandomAccessFile(path + "/" + name, "r");
+        byte[] b = new byte[(int) f2.length()];
+        f2.readFully(b);
+        f2.close();
+        return b;
+      } else
+        throw new InfoNotFoundException("File not found :" + name);
+    } else
+      throw new InfoNotFoundException("Directory not found :" + path);
+  }
+  
+  public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
+    File dir = new File(basePath, path);
+    if(dir.exists()){
+      File f = new File(dir, name);
+      if(!f.exists()){
+        RandomAccessFile f2 = new RandomAccessFile(path + "/" + name, "rw");
+        f2.write(cpFile);
+        f2.close();
+      }
+      else throw new InfoNotFoundException("File " + name + " alredy exists!");
+    }
+    else throw new InfoNotFoundException("Directory not found :" + path);
+  }
+  
+  public void rm(String path) throws InfoNotFoundException, IOException{
+    File f = new File(basePath, path);
+    if(f.exists()){
+      f.delete();
+    }
+    else throw new InfoNotFoundException("File " + path + " does not exists!");
+  }
 
   public void makeDir(String name) throws SecurityException, RemoteException {
     File dir = new File(name);
