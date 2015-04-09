@@ -1,5 +1,6 @@
 package trab1;
 
+import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.rmi.registry.*;
@@ -125,6 +126,14 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     }
     return result;
   }
+  
+  public FileInfo getAttr(String path) throws RemoteException, InfoNotFoundException {
+      File f = new File(path);
+      if (f.exists())
+        return new FileInfo(path, f.length(), new Date(f.lastModified()), f.isFile());
+      else
+        throw new InfoNotFoundException("File not found :" + path);
+  }
 
   public static void main(String args[]) throws Exception {
     try {
@@ -164,7 +173,9 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       // ligar ao contactServer
       try {
         IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-        if (contactServer.addFileServer(serverName, "/" + adress) == true)
+        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
+        //System.out.println(hostname);
+        if (contactServer.addFileServer(hostname, serverName, adress) == true)
           System.out.println("server ligado ao contact");
       } catch (Exception e) {
         System.err.println("Erro: " + e.getMessage());

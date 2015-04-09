@@ -91,6 +91,14 @@ public class Client {
     else throw new InfoNotFoundException("File " + path + " does not exists!");
   }
   
+  public static void getAttr(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
+    String fileServerURL = contactServer.getFileServerURL(serverName);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    FileInfo tmp = fileServer.getAttr(path);
+    String sout = "Name: " + tmp.name + "\nis File: " + tmp.isFile + "\nlast modified: " + tmp.modified;
+    System.out.println(sout);
+  }
+  
   public static void cpTo(IContactServer contactServer, String serverName, String pathFrom, String pathTo, String fileName) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
@@ -167,6 +175,11 @@ public class Client {
           else{
             rmLocal(command);
           }
+        }
+        else if(command.contains("getattr")){
+          command = command.substring(8);
+          String[] tmp = command.split("@");
+          getAttr(contactServer, tmp[0], tmp[1]);
         }
         else System.out.println("invalid command");
 

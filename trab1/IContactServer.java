@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 
 public interface IContactServer extends Remote {
 
-  public boolean addFileServer(String serverName, String serverAdress) throws RemoteException;
+  public boolean addFileServer(String hostName, String serverName, String serverAdress) throws RemoteException;
 
   public String[] getFileServers() throws RemoteException;
 

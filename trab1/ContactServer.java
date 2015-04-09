@@ -20,11 +20,11 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     fileServers = new HashMap<String, FileServerR>();
   }
 
-  public boolean addFileServer(String serverName, String serverAdress) throws RemoteException {
+  public boolean addFileServer(String hostName, String serverName, String serverAdress) throws RemoteException {
     if (fileServers.containsKey(serverName))
-      fileServers.get(serverName).addServer(serverAdress);
+      fileServers.get(serverName).addServer(hostName + "/" + serverAdress);
     else
-      fileServers.put(serverName, new FileServerR(serverName, serverAdress));
+      fileServers.put(serverName, new FileServerR(serverName, hostName + "/" + serverAdress));
     System.out.println(serverAdress + " adicionado como " + serverName);
     return true;
   }
