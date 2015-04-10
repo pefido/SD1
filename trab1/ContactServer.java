@@ -16,6 +16,29 @@ import java.util.Map;
 public class ContactServer extends UnicastRemoteObject implements IContactServer {
 
   private Map<String, FileServerR> fileServers;
+  
+  public class keepAlive extends Thread {
+
+    public void run() {
+        while (true){
+          for(FileServerR a: fileServers.values()){
+            try{
+              IFileServer fileServer = (IFileServer) Naming.lookup("//" + a.getServersA());
+              System.out.println(a.getServersA() + "is alive!");
+            }catch(Exception death){
+              fileServers.remove(a.getServersA());
+            }
+          }
+          try {
+            sleep(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+    }
+
+}
 
   public ContactServer() throws RemoteException {
     fileServers = new HashMap<String, FileServerR>();

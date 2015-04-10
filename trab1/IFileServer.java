@@ -33,5 +33,7 @@ public interface IFileServer extends Remote {
   public void rm(String path) throws InfoNotFoundException, IOException;
   
   public FileInfo getAttr(String path) throws RemoteException, InfoNotFoundException;
+  
+  public String alive();
 
 }
