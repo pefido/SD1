@@ -134,10 +134,6 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       else
         throw new InfoNotFoundException("File not found :" + path);
   }
-  
-  public String alive(){
-    return "potato";
-  }
 
   public static void main(String args[]) throws Exception {
     try {

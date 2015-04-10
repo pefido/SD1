@@ -15,30 +15,7 @@ import java.util.Map;
 
 public class ContactServer extends UnicastRemoteObject implements IContactServer {
 
-  private Map<String, FileServerR> fileServers;
-  
-  public class keepAlive extends Thread {
-
-    public void run() {
-        while (true){
-          for(FileServerR a: fileServers.values()){
-            try{
-              IFileServer fileServer = (IFileServer) Naming.lookup("//" + a.getServersA());
-              System.out.println(a.getServersA() + "is alive!");
-            }catch(Exception death){
-              fileServers.remove(a.getServersA());
-            }
-          }
-          try {
-            sleep(5000);
-          } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-        }
-    }
-
-}
+  private static Map<String, FileServerR> fileServers;
 
   public ContactServer() throws RemoteException {
     fileServers = new HashMap<String, FileServerR>();
@@ -95,6 +72,30 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       ContactServer server = new ContactServer();
       Naming.rebind("/myContactServer", server);
       System.out.println("ContactServer up in " + hostname);
+      
+      Thread keepAlive = new Thread(){
+        public void run() {
+          while (true){
+            for(FileServerR a: fileServers.values()){
+              try{
+                IFileServer fileServer = (IFileServer) Naming.lookup("//" + a.getServersA());
+                System.out.println(a.getServersA() + " is alive!");
+              }catch(Exception death){
+                fileServers.remove(a.getServersA());
+                System.out.println(a.getServersA() + " is dead");
+              }
+            }
+            try {
+              sleep(5000);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+      }
+      };
+      keepAlive.start();
+      
     } catch (Throwable th) {
       th.printStackTrace();
     }
