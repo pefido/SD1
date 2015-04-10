@@ -30,20 +30,20 @@ public class Client {
 
   public static void mkdir(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException {
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     fileServer.makeDir(dirName);
     System.out.println("directory " + dirName + " created in the " + serverName + " server");
   }
 
   public static void rmdir(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException {
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     System.out.println(fileServer.removeDir(dirName));
   }
 
   public static void ls(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException, InfoNotFoundException {
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     String[] tmp = fileServer.dir(dirName);
     String result = "";
     for (String a : tmp) {
@@ -54,7 +54,7 @@ public class Client {
   
   public static void cpFrom(IContactServer contactServer, String serverName, String pathFrom, String pathTo, String fileName) throws RemoteException, MalformedURLException, NotBoundException, InfoNotFoundException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     try {
       byte[] tmp = fileServer.cpFrom(pathFrom, fileName);
       File dir = new File(basePath, pathTo);
@@ -77,7 +77,7 @@ public class Client {
   
   public static void rm(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     fileServer.rm(path);
     System.out.println(path + " removido!");
   }
@@ -93,7 +93,7 @@ public class Client {
   
   public static void getAttr(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     FileInfo tmp = fileServer.getAttr(path);
     String sout = "Name: " + tmp.name + "\nis File: " + tmp.isFile + "\nlast modified: " + tmp.modified;
     System.out.println(sout);
@@ -101,7 +101,7 @@ public class Client {
   
   public static void cpTo(IContactServer contactServer, String serverName, String pathFrom, String pathTo, String fileName) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
-    IFileServer fileServer = (IFileServer) Naming.lookup("//localhost" + fileServerURL);
+    IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     
     File dir = new File(basePath, pathFrom);
     if (dir.exists()) {

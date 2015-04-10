@@ -59,8 +59,10 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
         System.setSecurityManager(new RMISecurityManager());
       }
 
+      String hostname = InetAddress.getLocalHost().getCanonicalHostName();
       try { // start rmiregistry
-        System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getCanonicalHostName());
+        
+        System.setProperty("java.rmi.server.hostname", hostname);
         LocateRegistry.createRegistry(1099);
       } catch (RemoteException e) {
         // if not start it
@@ -69,9 +71,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
 
       ContactServer server = new ContactServer();
       Naming.rebind("/myContactServer", server);
-      String hostname = InetAddress.getLocalHost().getCanonicalHostName();
-      System.out.println(hostname);
-      System.out.println("ContactServer up");
+      System.out.println("ContactServer up in " + hostname);
     } catch (Throwable th) {
       th.printStackTrace();
     }
