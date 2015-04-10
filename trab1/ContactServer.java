@@ -60,7 +60,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       }
 
       try { // start rmiregistry
-        //System.setProperty("java.rmi.server.hostname", "192.168.1.14");
+        System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getCanonicalHostName());
         LocateRegistry.createRegistry(1099);
       } catch (RemoteException e) {
         // if not start it
