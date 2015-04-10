@@ -45,6 +45,7 @@ public class Client {
     String fileServerURL = contactServer.getFileServerURL(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     String[] tmp = fileServer.dir(dirName);
+    System.out.println(tmp);
     String result = "";
     for (String a : tmp) {
       result += a + " ";
