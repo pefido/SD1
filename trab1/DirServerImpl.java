@@ -158,7 +158,9 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
         System.setSecurityManager(new RMISecurityManager());
       }
 
+      String hostname = InetAddress.getLocalHost().getCanonicalHostName();
       try { // start rmiregistry
+        System.setProperty("java.rmi.server.hostname", hostname);
         LocateRegistry.createRegistry(1099);
       } catch (RemoteException e) {
         // if not start it
@@ -173,8 +175,6 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       // ligar ao contactServer
       try {
         IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-        String hostname = InetAddress.getLocalHost().getCanonicalHostName();
-        System.setProperty("java.rmi.server.hostname", hostname);
         if (contactServer.addFileServer(hostname, serverName, adress) == true)
           System.out.println("server ligado ao contact");
       } catch (Exception e) {
