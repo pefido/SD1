@@ -1,6 +1,7 @@
 package trab1;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.Remote;
@@ -59,6 +60,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       }
 
       try { // start rmiregistry
+        //System.setProperty("java.rmi.server.hostname", "192.168.1.14");
         LocateRegistry.createRegistry(1099);
       } catch (RemoteException e) {
         // if not start it
@@ -67,6 +69,8 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
 
       ContactServer server = new ContactServer();
       Naming.rebind("/myContactServer", server);
+      String hostname = InetAddress.getLocalHost().getCanonicalHostName();
+      System.out.println(hostname);
       System.out.println("ContactServer up");
     } catch (Throwable th) {
       th.printStackTrace();
