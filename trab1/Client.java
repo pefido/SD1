@@ -24,7 +24,7 @@ public class Client {
     String[] serversWSN = contactServer.getFileServerWSN(serverName);
     String result = "servers named " + serverName + ":";
     for (String a : serversWSN)
-      result += " " + a + " ";
+      result += "\n" + a;
     System.out.println(result);
   }
 
@@ -45,7 +45,6 @@ public class Client {
     String fileServerURL = contactServer.getFileServerURL(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     String[] tmp = fileServer.dir(dirName);
-    System.out.println(tmp);
     String result = "";
     for (String a : tmp) {
       result += a + " ";

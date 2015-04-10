@@ -77,13 +77,17 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
         public void run() {
           while (true){
             for(FileServerR a: fileServers.values()){
-              try{
-                IFileServer fileServer = (IFileServer) Naming.lookup("//" + a.getServersA());
-                System.out.println(a.getServersA() + " is alive!");
-              }catch(Exception death){
-                fileServers.remove(a.getServersA());
-                System.out.println(a.getServersA() + " is dead");
+              for(String i: a.getServersA()){
+                try{
+                  IFileServer fileServer = (IFileServer) Naming.lookup("//" + i);
+                  fileServer.isAlive();
+                }catch(Exception death){
+                  a.removeServer(i);
+                  System.out.println(i + " is dead");
+                }
               }
+              if(a.getnServers() == 0)
+                fileServers.remove(a.getServerName());
             }
             try {
               sleep(5000);
