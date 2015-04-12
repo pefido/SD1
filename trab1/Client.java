@@ -128,6 +128,9 @@ public class Client {
 
     try {
       IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerName);
+      File cDir = new File(basePath);
+      if(!cDir.exists() || !cDir.isDirectory())
+        cDir.mkdir();
 
       Scanner sc = new Scanner(System.in);
       String command = "";
