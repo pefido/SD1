@@ -31,10 +31,7 @@ public class FileServerR {
   }
 
   public boolean removeServer(String adress) {
-    for (String a : serversA) {
-      if (a.equals(adress))
-        serversA.remove(a);
-    }
+    serversA.remove(adress);
     boolean exists = true;
     if (serversA.size() == 0)
       exists = false;

@@ -12,16 +12,6 @@ public interface IFileServer extends Remote {
    */
   public String[] dir(String path) throws RemoteException, InfoNotFoundException;
 
-  /**
-   * Devolve informacao sobre ficheiro.
-   */
-  public FileInfo getFileInfo(String path, String name) throws RemoteException, InfoNotFoundException;
-
-  /**
-   * transferir um ficheiro do server
-   */
-  public byte[] transferFile(String path, String name) throws RemoteException, InfoNotFoundException, IOException;
-
   public void makeDir(String name) throws SecurityException, RemoteException;
   
   public String removeDir(String name) throws SecurityException, RemoteException;
