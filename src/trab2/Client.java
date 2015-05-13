@@ -101,8 +101,8 @@ public class Client {
   public static void getAttr(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
-    FileInfo tmp = fileServer.getAttr(path);
-    String sout = "Name: " + tmp.name + "\nis File: " + tmp.isFile + "\nlast modified: " + tmp.modified;
+    String[] tmp = fileServer.getAttr(path);
+    String sout = "Name: " + tmp[0] + "\nsize: "+ tmp[1] +  "\nis File: " + tmp[2] + "\nlast modified: " + tmp[3];
     System.out.println(sout);
   }
   

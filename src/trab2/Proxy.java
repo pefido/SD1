@@ -7,6 +7,7 @@ import java.rmi.registry.*;
 import java.util.*;
 import java.io.*;
 import java.util.*;
+
 import org.json.simple.*;
 import org.json.simple.parser.*;
 import org.scribe.builder.*;
@@ -43,7 +44,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     ArrayList<String> tmp = new ArrayList<String>();
     String[] cenas = null;
     try {
-      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/?list=true");
+      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/" + path + "/?list=true");
       service.signRequest(accessToken, request);
       Response response = request.send();
 
@@ -89,8 +90,29 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
 
   }
 
-  public FileInfo getAttr(String path) throws RemoteException, InfoNotFoundException {
-    return null;
+  public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
+    String[] info = new String[4];
+    try {
+      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/" + path + "/?list=true");
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+
+      if (response.getCode() != 200)
+        throw new RuntimeException("Metadata response code:" + response.getCode());
+
+      JSONParser parser = new JSONParser();
+      JSONObject res = (JSONObject) parser.parse(response.getBody());
+      info[0] = (String)res.get("path");
+      info[1] = (String)res.get("size");
+      if(res.get("is_dir").toString().equals("false"))
+        info[2] = "true";
+      else
+        info[2] = "false";
+      info[3] = (String)res.get("modified");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return info;
 
   }
 

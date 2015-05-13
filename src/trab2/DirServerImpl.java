@@ -100,10 +100,11 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     return result;
   }
   
-  public FileInfo getAttr(String path) throws RemoteException, InfoNotFoundException {
+  public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
       File f = new File(path);
       if (f.exists())
-        return new FileInfo(path, f.length(), new Date(f.lastModified()), f.isFile());
+        //return new FileInfo(path, f.length(), new Date(f.lastModified()), f.isFile());
+        return null;
       else
         throw new InfoNotFoundException("File not found :" + path);
   }
