@@ -44,7 +44,11 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     ArrayList<String> tmp = new ArrayList<String>();
     String[] cenas = null;
     try {
-      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/" + path + "/?list=true");
+      String tmpS;
+      if(path.equals("."))
+        tmpS = "https://api.dropbox.com/1/metadata/dropbox/?list=true";
+      else tmpS = "https://api.dropbox.com/1/metadata/dropbox/" + path + "/?list=true";
+      OAuthRequest request = new OAuthRequest(Verb.GET, tmpS);
       service.signRequest(accessToken, request);
       Response response = request.send();
 
@@ -81,12 +85,35 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
 
   }
 
-  public void makeDir(String name) throws SecurityException, RemoteException {
+  public void makeDir(String path) throws SecurityException, RemoteException {
+    //https://api.dropbox.com/1/fileops/create_folder
+      try{
+      OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/create_folder");
+      request.addBodyParameter("root", "auto");
+      request.addBodyParameter("path", path);
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+      if (response.getCode() != 200)
+        throw new RuntimeException("Metadata response code:" + response.getCode());
+      }catch (Exception e) {
+        e.printStackTrace();
+      }
 
   }
 
-  public String removeDir(String name) throws SecurityException, RemoteException {
-    return null;
+  public String removeDir(String path) throws SecurityException, RemoteException {
+    try{
+      OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/delete");
+      request.addBodyParameter("root", "auto");
+      request.addBodyParameter("path", path);
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+      if (response.getCode() != 200)
+        throw new RuntimeException("Metadata response code:" + response.getCode());
+      }catch (Exception e) {
+        e.printStackTrace();
+      }
+    return "dir " + path + " removed";
 
   }
 
