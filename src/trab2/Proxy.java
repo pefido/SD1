@@ -73,12 +73,37 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   }
 
   public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException{
+    try{
+      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api-content.dropbox.com/1/files/auto/"+path+"/"+name);
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+      if (response.getCode() != 200)
+        throw new RuntimeException(" Metadata response code:" + response.getCode());
+      return response.getBody().getBytes();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
     return null;
-
   }
 
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
-
+    try{
+      String tmpS;
+      if(path.equals("."))
+        tmpS = "https://api-content.dropbox.com/1/files_put/auto/" + name + "?param=val";
+      else
+        tmpS = "https://api-content.dropbox.com/1/files_put/auto/" + path + "/" + name + "?param=val";
+      OAuthRequest request = new OAuthRequest(Verb.PUT, tmpS);
+      request.addHeader("Content-Type", "application/octet-stream");
+      request.addHeader("Content-Length", Long.toString(cpFile.length));
+      request.addPayload(cpFile);
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+      if (response.getCode() != 200)
+        throw new RuntimeException(" Metadata response code:" + response.getCode());
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void rm(String path) throws InfoNotFoundException, IOException{
@@ -93,7 +118,6 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
-    return "file " + path + " removed";
   }
 
   public void makeDir(String path) throws SecurityException, RemoteException {
