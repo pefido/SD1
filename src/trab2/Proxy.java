@@ -106,18 +106,26 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }
   }
 
-  public void rm(String path) throws InfoNotFoundException, IOException{
+  public String rm(String path) throws InfoNotFoundException, IOException{
+    String res = "";
     try{
-      OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/delete");
-      request.addBodyParameter("root", "auto");
-      request.addBodyParameter("path", path);
-      service.signRequest(accessToken, request);
-      Response response = request.send();
-      if (response.getCode() != 200)
-        throw new RuntimeException("Metadata response code:" + response.getCode());
+      if (!isFile(path)) {
+        res = path + " is not a file";
+      }
+      else {
+        OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/delete");
+        request.addBodyParameter("root", "auto");
+        request.addBodyParameter("path", path);
+        service.signRequest(accessToken, request);
+        Response response = request.send();
+        if (response.getCode() != 200)
+          throw new RuntimeException("Metadata response code:" + response.getCode());
+        res = "file " + path + "removed";
+      }
     }catch (Exception e) {
       e.printStackTrace();
     }
+    return res;
   }
 
   public void makeDir(String path) throws SecurityException, RemoteException {
@@ -136,19 +144,25 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   }
 
   public String removeDir(String path) throws SecurityException, RemoteException {
+    String res = "";
     try{
-      OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/delete");
-      request.addBodyParameter("root", "auto");
-      request.addBodyParameter("path", path);
-      service.signRequest(accessToken, request);
-      Response response = request.send();
-      if (response.getCode() != 200)
-        throw new RuntimeException("Metadata response code:" + response.getCode());
+      if (isFile(path)) {
+        res = path + " is not a directory";
+      }
+      else {
+        OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/delete");
+        request.addBodyParameter("root", "auto");
+        request.addBodyParameter("path", path);
+        service.signRequest(accessToken, request);
+        Response response = request.send();
+        if (response.getCode() != 200)
+          throw new RuntimeException("Metadata response code:" + response.getCode());
+        res = "dir " + path + " removed";
+      }
     }catch (Exception e) {
       e.printStackTrace();
     }
-    return "dir " + path + " removed";
-
+    return res;
   }
 
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
@@ -179,6 +193,28 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
 
   public String isAlive() throws RemoteException {
     return "potato";
+  }
+
+  public boolean isFile(String path) throws RemoteException, InfoNotFoundException {
+    try {
+      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api.dropbox.com/1/metadata/dropbox/" + path + "/?list=true");
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+
+      if (response.getCode() != 200)
+        throw new RuntimeException("Metadata response code:" + response.getCode());
+
+      JSONParser parser = new JSONParser();
+      JSONObject res = (JSONObject) parser.parse(response.getBody());
+
+      if(res.get("is_dir").toString().equals("false"))
+        return true;
+      else
+        return false;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 
   public static void main(String args[]) throws Exception {
