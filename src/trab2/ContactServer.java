@@ -39,7 +39,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     return fileServers.get(serverName).getServersA();
   }
 
-  public String getFileServerURL(String name) throws RemoteException {
+  public String getFileServerURLRandom(String name) throws RemoteException {
     Random rand = new Random();
     int tmp = rand.nextInt(fileServers.get(name).getnServers());
     return fileServers.get(name).getServersA()[tmp];

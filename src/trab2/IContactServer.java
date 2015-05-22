@@ -11,6 +11,6 @@ public interface IContactServer extends Remote {
 
   public String[] getFileServerWSN(String serverName) throws RemoteException;
 
-  public String getFileServerURL(String name) throws RemoteException;
+  public String getFileServerURLRandom(String name) throws RemoteException;
 
 }
