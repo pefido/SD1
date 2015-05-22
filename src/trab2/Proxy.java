@@ -23,6 +23,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   private File basePath;
   private static OAuthService service;
   private static Token accessToken;
+  private boolean primary;
 
   // Informação para ligar à API da drop
   private static final String API_KEY = "vmprbxiq1dy4gef";
@@ -87,6 +88,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   }
 
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
+    //escrita
     try{
       String tmpS;
       if(path.equals("."))
@@ -101,12 +103,14 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       Response response = request.send();
       if (response.getCode() != 200)
         throw new RuntimeException(" Metadata response code:" + response.getCode());
+      propagate();
     }catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   public String rm(String path) throws InfoNotFoundException, IOException{
+    //escrita
     String res = "";
     try{
       if (!isFile(path)) {
@@ -125,10 +129,12 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
+    propagate();
     return res;
   }
 
   public void makeDir(String path) throws SecurityException, RemoteException {
+    //escrita
     try{
       OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/create_folder");
       request.addBodyParameter("root", "auto");
@@ -137,6 +143,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       Response response = request.send();
       if (response.getCode() != 200)
         throw new RuntimeException("Metadata response code:" + response.getCode());
+      propagate();
     }catch (Exception e) {
       e.printStackTrace();
     }
@@ -144,6 +151,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   }
 
   public String removeDir(String path) throws SecurityException, RemoteException {
+    //escrita
     String res = "";
     try{
       if (isFile(path)) {
@@ -162,6 +170,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
+    propagate();
     return res;
   }
 
@@ -217,6 +226,10 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     return false;
   }
 
+  public void propagate() {
+    //propagar para os secundários
+  }
+
   public static void main(String args[]) throws Exception {
     try {
       String path = ".";
@@ -254,10 +267,15 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       // ligar ao contactServer
       try {
         IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
-        if (contactServer.addFileServer(hostname, serverName, adress) == true)
+        boolean isprim = contactServer.addFileServer(hostname, serverName, adress);
+        if (isprim) {
+          primary = true;
+        }
+        else {
+          primary = false;
+        }
           System.out.println("server ligado ao contact");
       } catch (Exception e) {
-        System.err.println("Erro: " + e.getMessage());
       }
 
       // LIGAR À LÀ DROP, YO!

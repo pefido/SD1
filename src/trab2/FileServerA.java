@@ -14,4 +14,8 @@ public class FileServerA {
     return adress;
   }
 
+  public boolean isprim() {
+    return isPrimary;
+  }
+
 }

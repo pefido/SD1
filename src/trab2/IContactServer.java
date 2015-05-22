@@ -13,4 +13,6 @@ public interface IContactServer extends Remote {
 
   public String getFileServerURLRandom(String name) throws RemoteException;
 
+  public String getFileServerPrimary(String name) throws RemoteException;
+
 }

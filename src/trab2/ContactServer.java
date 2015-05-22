@@ -26,15 +26,16 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     if (fileServers.containsKey(serverName)) {
       FileServerA ns = new FileServerA(hostName + "/" + serverAdress, false);
       fileServers.get(serverName).addServer(ns);
+      return false;
     }
     else {
       FileServerA ns = new FileServerA(hostName + "/" + serverAdress, true);
       FileServerR r = new FileServerR(serverName);
       r.addServer(ns);
       fileServers.put(serverName, r);
+      return true;
     }
     System.out.println(serverAdress + " adicionado como " + serverName);
-    return true;
   }
 
   public String[] getFileServers() throws RemoteException {
@@ -49,6 +50,10 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     Random rand = new Random();
     int tmp = rand.nextInt(fileServers.get(name).getnServers());
     return fileServers.get(name).getServersA()[tmp];
+  }
+
+  public String getFileServerPrimary(String name) throws RemoteException {
+    return fileServers.get(name).getPrimary();
   }
 
   public static void main(String[] args) {
