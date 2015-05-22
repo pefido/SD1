@@ -49,10 +49,6 @@ public class Client {
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     String[] tmp = fileServer.dir(dirName);
     String result = "";
-    /*while(tmp.hasNext()){
-      JSONObject file = (JSONObject) tmp.next();
-      result += file.get("path") + " ";
-    }*/
     for (String a : tmp) {
       result += a + "\n";
     }

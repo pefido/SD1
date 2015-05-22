@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ContactServer extends UnicastRemoteObject implements IContactServer {
 
@@ -39,7 +40,9 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
   }
 
   public String getFileServerURL(String name) throws RemoteException {
-    return fileServers.get(name).getServersA()[0];
+    Random rand = new Random();
+    int tmp = rand.nextInt(fileServers.get(name).getnServers());
+    return fileServers.get(name).getServersA()[tmp];
   }
 
   public static void main(String[] args) {
