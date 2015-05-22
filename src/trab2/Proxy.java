@@ -23,7 +23,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   private File basePath;
   private static OAuthService service;
   private static Token accessToken;
-  private boolean primary;
+  boolean primary;
 
   // Informação para ligar à API da drop
   private static final String API_KEY = "vmprbxiq1dy4gef";
@@ -269,10 +269,10 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
         IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
         boolean isprim = contactServer.addFileServer(hostname, serverName, adress);
         if (isprim) {
-          primary = true;
+          server.primary = true;
         }
         else {
-          primary = false;
+          server.primary = false;
         }
           System.out.println("server ligado ao contact");
       } catch (Exception e) {

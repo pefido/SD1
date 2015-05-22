@@ -26,6 +26,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     if (fileServers.containsKey(serverName)) {
       FileServerA ns = new FileServerA(hostName + "/" + serverAdress, false);
       fileServers.get(serverName).addServer(ns);
+      System.out.println(serverAdress + " adicionado como " + serverName);
       return false;
     }
     else {
@@ -33,9 +34,9 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       FileServerR r = new FileServerR(serverName);
       r.addServer(ns);
       fileServers.put(serverName, r);
+      System.out.println(serverAdress + " adicionado como " + serverName);
       return true;
     }
-    System.out.println(serverAdress + " adicionado como " + serverName);
   }
 
   public String[] getFileServers() throws RemoteException {
