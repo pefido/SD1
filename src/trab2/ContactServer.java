@@ -23,10 +23,16 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
   }
 
   public boolean addFileServer(String hostName, String serverName, String serverAdress) throws RemoteException {
-    if (fileServers.containsKey(serverName))
-      fileServers.get(serverName).addServer(hostName + "/" + serverAdress);
-    else
-      fileServers.put(serverName, new FileServerR(serverName, hostName + "/" + serverAdress));
+    if (fileServers.containsKey(serverName)) {
+      FileServerA ns = new FileServerA(hostName + "/" + serverAdress, false);
+      fileServers.get(serverName).addServer(ns);
+    }
+    else {
+      FileServerA ns = new FileServerA(hostName + "/" + serverAdress, true);
+      FileServerR r = new FileServerR(serverName);
+      r.addServer(ns);
+      fileServers.put(serverName, r);
+    }
     System.out.println(serverAdress + " adicionado como " + serverName);
     return true;
   }
@@ -64,7 +70,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
 
       String hostname = InetAddress.getLocalHost().getCanonicalHostName();
       try { // start rmiregistry
-        
+
         System.setProperty("java.rmi.server.hostname", hostname);
         LocateRegistry.createRegistry(1099);
       } catch (RemoteException e) {
@@ -75,7 +81,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       ContactServer server = new ContactServer();
       Naming.rebind("/myContactServer", server);
       System.out.println("ContactServer up in " + hostname);
-      
+
       Thread keepAlive = new Thread(){
         public void run() {
           while (true){
@@ -109,7 +115,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       }
       };
       keepAlive.start();
-      
+
     } catch (Throwable th) {
       th.printStackTrace();
     }

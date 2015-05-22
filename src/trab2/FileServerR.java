@@ -2,20 +2,21 @@ package trab2;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashMap;
 
 public class FileServerR {
 
   private String name;
-  private List<String> serversA;
+  private HashMap<String, FileServerA> serversA;
 
-  public FileServerR(String name, String serverA) {
+  public FileServerR(String name) {
     this.name = name;
-    this.serversA = new LinkedList<String>();
-    this.serversA.add(serverA);
+    this.serversA = new HashMap<String, FileServerA>();
+    //this.serversA = new LinkedList<FileServerA>();
   }
 
   public String[] getServersA() {
-    return serversA.toArray(new String[0]);
+    return serversA.keySet().toArray(new String[0]);
   }
 
   public String getServerName() {
@@ -26,12 +27,12 @@ public class FileServerR {
     return serversA.size();
   }
 
-  public void addServer(String adress) {
-    serversA.add(adress);
+  public void addServer(FileServerA server) {
+    serversA.put(server.getAdress(), server);
   }
 
   public boolean removeServer(String adress) {
-    serversA.remove(adress);
+    serversA.get(adress);
     boolean exists = true;
     if (serversA.size() == 0)
       exists = false;

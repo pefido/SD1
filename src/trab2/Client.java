@@ -54,7 +54,7 @@ public class Client {
     }
     System.out.println(result);
   }
-  
+
   public static void cpFrom(IContactServer contactServer, String serverName, String pathFrom, String pathTo, String fileName) throws RemoteException, MalformedURLException, NotBoundException, InfoNotFoundException{
     String fileServerURL = contactServer.getFileServerURLRandom(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
@@ -77,13 +77,13 @@ public class Client {
       e.printStackTrace();
     }
   }
-  
+
   public static void rm(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURLRandom(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
     System.out.println(fileServer.rm(path));
   }
-  
+
   public static void rmLocal(String path) throws InfoNotFoundException{
     File f = new File(basePath, path);
     if(f.exists()){
@@ -92,7 +92,7 @@ public class Client {
     }
     else throw new InfoNotFoundException("File " + path + " does not exists!");
   }
-  
+
   public static void getAttr(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURLRandom(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
@@ -100,11 +100,11 @@ public class Client {
     String sout = "Name: " + tmp[0] + "\nsize: "+ tmp[1] +  "\nis File: " + tmp[2] + "\nlast modified: " + tmp[3];
     System.out.println(sout);
   }
-  
+
   public static void cpTo(IContactServer contactServer, String serverName, String pathFrom, String pathTo, String fileName) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURLRandom(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
-    
+
     File dir = new File(basePath, pathFrom);
     if (dir.exists()) {
       File f = new File(dir, fileName);

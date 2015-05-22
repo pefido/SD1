@@ -33,7 +33,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       throw new InfoNotFoundException("Directory not found :" + path);*/
     return null;
   }
-  
+
   public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException{
     File dir = new File(basePath, path);
     if (dir.exists()) {
@@ -49,7 +49,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     } else
       throw new InfoNotFoundException("Directory not found :" + path);
   }
-  
+
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
     File dir = new File(basePath, path);
     if(dir.exists()){
@@ -63,7 +63,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     }
     else throw new InfoNotFoundException("Directory not found :" + path);
   }
-  
+
   public String rm(String path) throws InfoNotFoundException, IOException{
     File f = new File(basePath, path);
     if(f.exists()){
@@ -100,7 +100,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     }
     return result;
   }
-  
+
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
       File f = new File(path);
       if (f.exists())
@@ -109,7 +109,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       else
         throw new InfoNotFoundException("File not found :" + path);
   }
-  
+
   public String isAlive() throws RemoteException{
     return "potato";
   }
