@@ -81,8 +81,7 @@ public class Client {
   public static void rm(IContactServer contactServer, String serverName, String path) throws NotBoundException, InfoNotFoundException, IOException{
     String fileServerURL = contactServer.getFileServerURL(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);
-    fileServer.rm(path);
-    System.out.println(path + " removido!");
+    System.out.println(fileServer.rm(path));
   }
   
   public static void rmLocal(String path) throws InfoNotFoundException{

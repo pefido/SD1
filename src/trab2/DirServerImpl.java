@@ -64,12 +64,13 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     else throw new InfoNotFoundException("Directory not found :" + path);
   }
   
-  public void rm(String path) throws InfoNotFoundException, IOException{
+  public String rm(String path) throws InfoNotFoundException, IOException{
     File f = new File(basePath, path);
     if(f.exists()){
       f.delete();
     }
     else throw new InfoNotFoundException("File " + path + " does not exists!");
+    return "";
   }
 
   public void makeDir(String name) throws SecurityException, RemoteException {

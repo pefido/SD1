@@ -20,7 +20,7 @@ public interface IFileServer extends Remote {
   
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException;
   
-  public void rm(String path) throws InfoNotFoundException, IOException;
+  public String rm(String path) throws InfoNotFoundException, IOException;
   
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException;
   
