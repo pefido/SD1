@@ -86,6 +86,21 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }
     return null;
   }
+  
+  public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException{
+    try{
+      System.out.println("aqui: " + path);
+      OAuthRequest request = new OAuthRequest(Verb.GET, "https://api-content.dropbox.com/1/files/auto"+path);
+      service.signRequest(accessToken, request);
+      Response response = request.send();
+      if (response.getCode() != 200)
+        throw new RuntimeException(" Metadata response code:" + response.getCode());
+      return response.getBody().getBytes();
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
     //escrita
@@ -274,13 +289,13 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
         else {
           server.primary = false;
         }
-          System.out.println("server ligado ao contact");
+        System.out.println("server ligado ao contact");
       } catch (Exception e) {
       }
 
       // LIGAR À LÀ DROP, YO!
       service = new ServiceBuilder().provider(DropBoxApi.class).apiKey(API_KEY)
-        .apiSecret(API_SECRET).scope(SCOPE).build();
+          .apiSecret(API_SECRET).scope(SCOPE).build();
       Scanner in = new Scanner(System.in);
 
       // Obter Request token

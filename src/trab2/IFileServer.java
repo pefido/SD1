@@ -25,5 +25,7 @@ public interface IFileServer extends Remote {
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException;
 
   public String isAlive() throws RemoteException;
+  
+  public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException;
 
 }

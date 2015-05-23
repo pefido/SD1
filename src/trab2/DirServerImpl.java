@@ -15,7 +15,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   private static final long serialVersionUID = 1L;
 
-  private String basePathName;
+  private static String basePathName;
   private File basePath;
 
   protected DirServerImpl(String pathname) throws RemoteException {
@@ -50,11 +50,11 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   }
 
   public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
-    File dir = new File(basePath, path);
+    File dir = new File(basePathName, path);
     if(dir.exists()){
       File f = new File(dir, name);
       if(!f.exists()){
-        RandomAccessFile f2 = new RandomAccessFile(path + "/" + name, "rw");
+        RandomAccessFile f2 = new RandomAccessFile(basePathName+"/" + path + "/" + name, "rw");
         f2.write(cpFile);
         f2.close();
       }
@@ -116,6 +116,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   public static void main(String args[]) throws Exception {
     try {
       String path = "./local";
+      
       if (args.length != 2) {
         System.out.println("Use: java DirServerImpl server_name contact_server_URL");
         System.exit(0);
@@ -144,6 +145,10 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
       DirServerImpl server = new DirServerImpl(path);
       String adress = serverName + System.currentTimeMillis();
+      File cDir = new File(adress);
+      if(!cDir.exists() || !cDir.isDirectory())
+        cDir.mkdir();
+      basePathName = adress;
       Naming.rebind(adress, server);
       System.out.println("DirServer bound in registry");
 
@@ -159,6 +164,12 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     } catch (Throwable th) {
       th.printStackTrace();
     }
+  }
+
+  @Override
+  public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
