@@ -28,6 +28,12 @@ p:
 	@echo "------------------"
 	$(J) -cp $(JAR):. trab2.Proxy SD localhost
 
+l:
+	@echo "------------------"
+	@echo " Local Server     "
+	@echo "------------------"
+	$(J) -cp $(JAR):. trab2.DirServerImpl SD localhost
+
 c:
 	@echo "------------------"
 	@echo " Client           "

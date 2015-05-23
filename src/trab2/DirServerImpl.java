@@ -26,12 +26,11 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   @Override
   public String[] dir(String path) throws RemoteException, InfoNotFoundException {
-    /*File f = new File(basePath, path);
+    File f = new File(basePath, path);
     if (f.exists())
       return f.list();
     else
-      throw new InfoNotFoundException("Directory not found :" + path);*/
-    return null;
+      throw new InfoNotFoundException("Directory not found :" + path);
   }
 
   public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException{
@@ -116,7 +115,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   public static void main(String args[]) throws Exception {
     try {
-      String path = ".";
+      String path = "./local";
       if (args.length != 2) {
         System.out.println("Use: java DirServerImpl server_name contact_server_URL");
         System.exit(0);

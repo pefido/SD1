@@ -12,7 +12,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Random;
+import java.rmi.*;
+import java.rmi.server.*;
+import java.rmi.registry.*;
+import java.util.*;
+import java.io.*;
 
 public class ContactServer extends UnicastRemoteObject implements IContactServer {
 
@@ -22,11 +31,12 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     fileServers = new HashMap<String, FileServerR>();
   }
 
-  public boolean addFileServer(String hostName, String serverName, String serverAdress) throws RemoteException {
+  public boolean addFileServer(String hostName, String serverName, String serverAdress) throws RemoteException , MalformedURLException , NotBoundException, InfoNotFoundException, IOException {
     if (fileServers.containsKey(serverName)) {
       FileServerA ns = new FileServerA(hostName + "/" + serverAdress, false);
       fileServers.get(serverName).addServer(ns);
-      System.out.println(serverAdress + " adicionado como " + serverName);
+      System.out.println(serverAdress + " adicionado como " + serverName + " (secundário)");
+      sync(ns.getAdress(), fileServers.get(serverName).getPrimary());
       return false;
     }
     else {
@@ -34,9 +44,22 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       FileServerR r = new FileServerR(serverName);
       r.addServer(ns);
       fileServers.put(serverName, r);
-      System.out.println(serverAdress + " adicionado como " + serverName);
+      System.out.println(serverAdress + " adicionado como " + serverName + " (primário)");
       return true;
     }
+  }
+
+  public void sync(String secondary, String primary) throws RemoteException, MalformedURLException, NotBoundException, InfoNotFoundException , IOException {
+    System.out.println("Sincronizar o  " + primary + " com o " + secondary);
+    IFileServer pserver = (IFileServer) Naming.lookup("//" + primary);
+    IFileServer sserver = (IFileServer) Naming.lookup("//" + secondary);
+    String[] tmp = pserver.dir(".");
+    String result = "";
+    for (String a : tmp) {
+      sserver.cpTo(".", a, pserver.cpFrom(a, ""));
+      result += a + "\n";
+    }
+    System.out.println(result);
   }
 
   public String[] getFileServers() throws RemoteException {
