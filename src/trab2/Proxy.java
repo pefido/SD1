@@ -1,6 +1,7 @@
 package trab2;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.rmi.registry.*;
@@ -24,6 +25,9 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   private static OAuthService service;
   private static Token accessToken;
   boolean primary;
+  static IContactServer contactServer;
+  static String serverName;
+  static String adress;
 
   // Informação para ligar à API da drop
   private static final String API_KEY = "vmprbxiq1dy4gef";
@@ -106,10 +110,15 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     //escrita
     try{
       String tmpS;
-      if(path.equals("."))
+      String propagatePath;
+      if(path.equals(".")){
         tmpS = "https://api-content.dropbox.com/1/files_put/auto/" + name + "?param=val";
-      else
+        propagatePath = name;
+      }
+      else{
         tmpS = "https://api-content.dropbox.com/1/files_put/auto/" + path + "/" + name + "?param=val";
+        propagatePath = path + "/" + name;
+      }
       OAuthRequest request = new OAuthRequest(Verb.PUT, tmpS);
       request.addHeader("Content-Type", "application/octet-stream");
       request.addHeader("Content-Length", Long.toString(cpFile.length));
@@ -118,7 +127,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       Response response = request.send();
       if (response.getCode() != 200)
         throw new RuntimeException(" Metadata response code:" + response.getCode());
-      propagate();
+      propagate(propagatePath, "cpTo");
     }catch (Exception e) {
       e.printStackTrace();
     }
@@ -144,7 +153,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
-    propagate();
+    //propagate();
     return res;
   }
 
@@ -158,7 +167,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       Response response = request.send();
       if (response.getCode() != 200)
         throw new RuntimeException("Metadata response code:" + response.getCode());
-      propagate();
+      //propagate();
     }catch (Exception e) {
       e.printStackTrace();
     }
@@ -185,7 +194,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
-    propagate();
+    //propagate();
     return res;
   }
 
@@ -241,8 +250,9 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     return false;
   }
 
-  public void propagate() {
+  public void propagate(String path, String operation) throws RemoteException, MalformedURLException, NotBoundException {
     //propagar para os secundários
+    contactServer.propagate(serverName, path, operation);
   }
 
   public static void main(String args[]) throws Exception {
@@ -252,7 +262,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
         System.out.println("Use: java Proxy server_name contact_server_URL");
         System.exit(0);
       }
-      String serverName = args[0];
+      serverName = args[0];
       String contactServerURL = args[1];
 
       File policy = new File("policy.all");
@@ -275,13 +285,13 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       }
 
       Proxy server = new Proxy(path);
-      String adress = serverName + System.currentTimeMillis();
+      adress = serverName + System.currentTimeMillis();
       Naming.rebind(adress, server);
       System.out.println("DirServer bound in registry");
 
       // ligar ao contactServer
       try {
-        IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
+        contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
         boolean isprim = contactServer.addFileServer(hostname, serverName, adress);
         if (isprim) {
           server.primary = true;

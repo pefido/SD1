@@ -61,6 +61,11 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     }
     System.out.println(result);
   }
+  
+  public void propagate(String serverName, String path, String operation) throws MalformedURLException, RemoteException, NotBoundException{
+    IFileServer pserver = (IFileServer) Naming.lookup("//" + fileServers.get(serverName).getPrimary());
+    //progagar operacao sobre o ficheiro path para todos os secundários
+  }
 
   public String[] getFileServers() throws RemoteException {
     return fileServers.keySet().toArray(new String[0]);
