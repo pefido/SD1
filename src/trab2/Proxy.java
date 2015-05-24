@@ -105,7 +105,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     return null;
   }
 
-  public void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
+  public synchronized void cpTo(String path, String name, byte[] cpFile) throws InfoNotFoundException, IOException{
     //escrita
     try{
       String tmpS;
@@ -132,7 +132,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }
   }
 
-  public String rm(String path) throws InfoNotFoundException, IOException{
+  public synchronized String rm(String path) throws InfoNotFoundException, IOException, NotBoundException{
     //escrita
     String res = "";
     try{
@@ -152,11 +152,11 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
-    //propagate();
+    propagate(path, "rm");
     return res;
   }
 
-  public void makeDir(String path) throws SecurityException, RemoteException {
+  public synchronized void makeDir(String path) throws SecurityException, RemoteException {
     //escrita
     try{
       OAuthRequest request = new OAuthRequest(Verb.POST, "https://api.dropbox.com/1/fileops/create_folder");
@@ -173,7 +173,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
 
   }
 
-  public String removeDir(String path) throws SecurityException, RemoteException {
+  public synchronized String removeDir(String path) throws SecurityException, RemoteException {
     //escrita
     String res = "";
     try{

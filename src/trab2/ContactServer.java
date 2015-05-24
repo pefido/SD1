@@ -71,8 +71,11 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
       if(!a.equals(fileServers.get(serverName).getPrimary())){
         IFileServer sserver = (IFileServer) Naming.lookup("//" + a);
         if(operation.equals("cpTo")){
-          System.out.println("aqui tao cenas: " + path);
+          //System.out.println("aqui tao cenas: " + path);
           sserver.cpTo(".", path, pserver.cpFromSync("/" + path));
+        }
+        else if(operation.equals("rm")){
+          sserver.rm(path);
         }
       }
     }

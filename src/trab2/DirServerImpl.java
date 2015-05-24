@@ -16,12 +16,12 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   private static final long serialVersionUID = 1L;
 
   private static String basePathName;
-  private File basePath;
+  private static File basePath;
 
   protected DirServerImpl(String pathname) throws RemoteException {
     super();
-    this.basePathName = pathname;
-    basePath = new File(pathname);
+    //this.basePathName = pathname;
+    //basePath = new File(pathname);
   }
 
   @Override
@@ -63,7 +63,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
     else throw new InfoNotFoundException("Directory not found :" + path);
   }
 
-  public String rm(String path) throws InfoNotFoundException, IOException{
+  public String rm(String path) throws InfoNotFoundException, IOException, NotBoundException{
     File f = new File(basePath, path);
     if(f.exists()){
       f.delete();
@@ -149,6 +149,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
       if(!cDir.exists() || !cDir.isDirectory())
         cDir.mkdir();
       basePathName = adress;
+      basePath = new File(basePathName);
       Naming.rebind(adress, server);
       System.out.println("DirServer bound in registry");
 
