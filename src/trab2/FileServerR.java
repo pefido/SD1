@@ -33,15 +33,20 @@ public class FileServerR {
     return prim.getAdress();
   }
 
+  public Iterator teste() {
+    return serversA.entrySet().iterator();
+  }
+
   public String newPrimary() {
     Iterator it = serversA.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry pair = (Map.Entry)it.next();
       if (! pair.getKey().equals(prim.getAdress())) {
         prim = (FileServerA)pair.getValue();
+        return prim.getAdress();
       }
     }
-    return prim.getAdress();
+    return null;
   }
 
   public void addServer(FileServerA server) {
