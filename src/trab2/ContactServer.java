@@ -57,7 +57,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     String[] tmp = pserver.dir(".");
     String result = "";
     for (String a : tmp) {
-      //sserver.cpTo(".", a, pserver.cpFromSync(a));
+      sserver.cpTo(".", a, pserver.cpFromSync(a));
       result += a + "\n";
     }
     System.out.println(result);
