@@ -18,6 +18,6 @@ public interface IContactServer extends Remote {
 
   public String getFileServerPrimary(String name) throws RemoteException;
   
-  public void propagate(String serverName, String path, String operation) throws MalformedURLException, RemoteException, NotBoundException;
+  public void propagate(String serverName, String path, String operation) throws NotBoundException, InfoNotFoundException, IOException;
 
 }

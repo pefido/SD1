@@ -1,6 +1,7 @@
 package trab2;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
@@ -62,9 +63,19 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     System.out.println(result);
   }
   
-  public void propagate(String serverName, String path, String operation) throws MalformedURLException, RemoteException, NotBoundException{
+  public void propagate(String serverName, String path, String operation) throws NotBoundException, InfoNotFoundException, IOException{
     IFileServer pserver = (IFileServer) Naming.lookup("//" + fileServers.get(serverName).getPrimary());
     //progagar operacao sobre o ficheiro path para todos os secundários
+    String [] tmpServers = fileServers.get(serverName).getServersA();
+    for(String a: tmpServers){
+      if(!a.equals(fileServers.get(serverName).getPrimary())){
+        IFileServer sserver = (IFileServer) Naming.lookup("//" + a);
+        if(operation.equals("cpTo")){
+          System.out.println("aqui tao cenas: " + path);
+          sserver.cpTo(".", path, pserver.cpFromSync("/" + path));
+        }
+      }
+    }
   }
 
   public String[] getFileServers() throws RemoteException {
