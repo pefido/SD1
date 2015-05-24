@@ -139,7 +139,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
                   IFileServer fileServer = (IFileServer) Naming.lookup("//" + i);
                   fileServer.isAlive();
                 }catch(Exception death){
-                  if(a.getPrimary() == i) {
+                  if(a.getPrimary().equals(i)) {
                     System.out.println(a.newPrimary() + " is the new primary "+a.getServerName()+ " server");
                   }
                   if(a.removeServer(i) == false) {
