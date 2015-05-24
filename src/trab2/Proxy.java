@@ -93,7 +93,6 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
   
   public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException{
     try{
-      System.out.println("aqui: " + path);
       OAuthRequest request = new OAuthRequest(Verb.GET, "https://api-content.dropbox.com/1/files/auto"+path);
       service.signRequest(accessToken, request);
       Response response = request.send();
@@ -250,7 +249,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     return false;
   }
 
-  public void propagate(String path, String operation) throws RemoteException, MalformedURLException, NotBoundException {
+  public void propagate(String path, String operation) throws NotBoundException, InfoNotFoundException, IOException {
     //propagar para os secundários
     contactServer.propagate(serverName, path, operation);
   }
