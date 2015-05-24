@@ -57,7 +57,7 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     String[] tmp = pserver.dir(".");
     String result = "";
     for (String a : tmp) {
-      sserver.cpTo(".", a, pserver.cpFromSync(a));
+      //sserver.cpTo(".", a, pserver.cpFromSync(a));
       result += a + "\n";
     }
     System.out.println(result);
@@ -139,8 +139,13 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
                   IFileServer fileServer = (IFileServer) Naming.lookup("//" + i);
                   fileServer.isAlive();
                 }catch(Exception death){
-                  if(a.removeServer(i) == false)
+                  if(a.getPrimary() == i) {
+                    System.out.println("Arranjar outro primário");
+                  }
+                  if(a.removeServer(i) == false) {
+                    System.out.println(a.getServerName() + " Com o boda");
                     fileServers.remove(a.getServerName());
+                  }
                   System.out.println(i + " is dead");
                 }
                 try {
@@ -150,8 +155,10 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
                   e.printStackTrace();
                 }
               }
-              if(a.getnServers() == 0)
+              if(a.getnServers() == 0) {
+                System.out.println(a.getServerName() + " Com o boda");
                 fileServers.remove(a.getServerName());
+              }
             }
             try {
               sleep(5000);
