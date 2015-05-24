@@ -31,7 +31,6 @@ public class FileServerR {
     return prim.getAdress();
   }
 
-
   public void addServer(FileServerA server) {
     if (server.isprim())
       prim = server;
@@ -39,7 +38,8 @@ public class FileServerR {
   }
 
   public boolean removeServer(String adress) {
-    serversA.get(adress);
+    //serversA.get(adress);
+    serversA.remove(adress);
     boolean exists = true;
     if (serversA.size() == 0)
       exists = false;
