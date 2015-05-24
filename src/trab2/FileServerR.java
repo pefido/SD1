@@ -3,6 +3,8 @@ package trab2;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
 
 public class FileServerR {
 
@@ -28,6 +30,17 @@ public class FileServerR {
   }
 
   public String getPrimary() {
+    return prim.getAdress();
+  }
+
+  public String newPrimary() {
+    Iterator it = serversA.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry pair = (Map.Entry)it.next();
+      if (! pair.getKey().equals(prim.getAdress())) {
+        prim = (FileServerA)pair.getValue();
+      }
+    }
     return prim.getAdress();
   }
 

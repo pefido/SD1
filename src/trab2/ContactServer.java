@@ -137,13 +137,13 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
                   fileServer.isAlive();
                 }catch(Exception death){
                   if(a.getPrimary() == i) {
-                    System.out.println("Arranjar outro primário");
+                    System.out.println(a.newPrimary() + " is the new primary "+a.getServerName()+ " server");
                   }
                   if(a.removeServer(i) == false) {
-                    System.out.println(a.getServerName() + " Com o boda");
+                    System.out.println(a.getServerName() + " has no servers left");
                     fileServers.remove(a.getServerName());
                   }
-                  System.out.println(i + " is dead");
+                  System.out.println(i + " is down");
                 }
                 try {
                   sleep(1000);
@@ -153,7 +153,6 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
                 }
               }
               if(a.getnServers() == 0) {
-                System.out.println(a.getServerName() + " Com o boda");
                 fileServers.remove(a.getServerName());
               }
             }
