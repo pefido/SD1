@@ -29,5 +29,7 @@ public interface IFileServer extends Remote {
   public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException;
   
   public boolean isFile(String path) throws RemoteException, InfoNotFoundException;
+  
+  public void propagate(String path, String operation) throws NotBoundException, InfoNotFoundException, IOException;
 
 }

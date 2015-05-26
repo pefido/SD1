@@ -17,6 +17,8 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   private static String basePathName;
   private static File basePath;
+  private static String serverName;
+  private static IContactServer contactServer;
 
   protected DirServerImpl(String pathname) throws RemoteException {
     super();
@@ -102,9 +104,16 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
       File f = new File(basePathName, path);
-      if (f.exists())
+      if (f.exists()){
+        String[] tmp = new String[4];
+        tmp[0] = path;
+        tmp[1] = Long.toString(f.getTotalSpace());
+        tmp[2] = Boolean.toString(f.isFile());
+        tmp[3] = Long.toString(f.lastModified());
+        return tmp;
+      }
         //return new FileInfo(path, f.length(), new Date(f.lastModified()), f.isFile());
-        return null;
+        //return null;
       else
         throw new InfoNotFoundException("File not found :" + path);
   }
@@ -121,7 +130,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
         System.out.println("Use: java DirServerImpl server_name contact_server_URL");
         System.exit(0);
       }
-      String serverName = args[0];
+      serverName = args[0];
       String contactServerURL = args[1];
 
       File policy = new File("policy.all");
@@ -155,7 +164,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
       // ligar ao contactServer
       try {
-        IContactServer contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
+        contactServer = (IContactServer) Naming.lookup("//" + contactServerURL + "/myContactServer");
         if (contactServer.addFileServer(hostname, serverName, adress) == true)
           System.out.println("server ligado ao contact");
       } catch (Exception e) {
@@ -175,8 +184,18 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   @Override
   public boolean isFile(String path) throws RemoteException, InfoNotFoundException {
+    File f = new File(basePathName, path);
+    if (f.exists()){
+      return f.isFile();
+    }
+    else
+      throw new InfoNotFoundException("File not found :" + path);
+  }
+
+  @Override
+  public void propagate(String path, String operation) throws NotBoundException, InfoNotFoundException, IOException {
     // TODO Auto-generated method stub
-    return false;
+    contactServer.propagate(serverName, path, operation);
   }
 
 }
