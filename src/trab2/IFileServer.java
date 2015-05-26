@@ -14,7 +14,7 @@ public interface IFileServer extends Remote {
 
   public void makeDir(String name) throws SecurityException, RemoteException;
 
-  public String removeDir(String name) throws SecurityException, RemoteException;
+  public String removeDir(String name) throws SecurityException, NotBoundException, InfoNotFoundException, IOException;
 
   public byte[] cpFrom(String path, String name) throws InfoNotFoundException, IOException;
 
@@ -27,5 +27,7 @@ public interface IFileServer extends Remote {
   public String isAlive() throws RemoteException;
   
   public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException;
+  
+  public boolean isFile(String path) throws RemoteException, InfoNotFoundException;
 
 }

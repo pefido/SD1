@@ -147,7 +147,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
         Response response = request.send();
         if (response.getCode() != 200)
           throw new RuntimeException("Metadata response code:" + response.getCode());
-        res = "file " + path + "removed";
+        res = "file " + path + " removed";
       }
     }catch (Exception e) {
       e.printStackTrace();
@@ -166,14 +166,14 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
       Response response = request.send();
       if (response.getCode() != 200)
         throw new RuntimeException("Metadata response code:" + response.getCode());
-      //propagate();
+      propagate(path, "mkdir");
     }catch (Exception e) {
       e.printStackTrace();
     }
 
   }
 
-  public synchronized String removeDir(String path) throws SecurityException, RemoteException {
+  public synchronized String removeDir(String path) throws SecurityException, NotBoundException, InfoNotFoundException, IOException {
     //escrita
     String res = "";
     try{
@@ -193,7 +193,7 @@ public class Proxy extends UnicastRemoteObject implements IFileServer {
     }catch (Exception e) {
       e.printStackTrace();
     }
-    //propagate();
+    propagate(path, "rmdir");
     return res;
   }
 

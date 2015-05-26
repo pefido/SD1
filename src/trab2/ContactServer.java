@@ -57,8 +57,18 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
     String[] tmp = pserver.dir(".");
     String result = "";
     for (String a : tmp) {
+      if(pserver.isFile(a.substring(1))){
       sserver.cpTo(".", a, pserver.cpFromSync(a));
       result += a + "\n";
+      }
+      else{
+        sserver.makeDir(a);
+        String[] tmp2 = pserver.dir(a.substring(1));
+        for(String b: tmp2){
+          sserver.cpTo(".", b, pserver.cpFromSync(b));
+          result += b + "\n";
+        }
+      }
     }
     System.out.println(result);
   }
@@ -76,6 +86,12 @@ public class ContactServer extends UnicastRemoteObject implements IContactServer
         }
         else if(operation.equals("rm")){
           sserver.rm(path);
+        }
+        else if(operation.equals("mkdir")){
+          sserver.makeDir(path);
+        }
+        else if (operation.equals("rmdir")){
+          sserver.removeDir(path);
         }
       }
     }

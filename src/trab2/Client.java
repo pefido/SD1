@@ -39,7 +39,7 @@ public class Client {
     System.out.println("directory " + dirName + " created in the " + serverName + " server");
   }
 
-  public static void rmdir(IContactServer contactServer, String serverName, String dirName) throws RemoteException, MalformedURLException, NotBoundException {
+  public static void rmdir(IContactServer contactServer, String serverName, String dirName) throws NotBoundException, SecurityException, InfoNotFoundException, IOException {
     //escrita
     String fileServerURL = contactServer.getFileServerPrimary(serverName);
     IFileServer fileServer = (IFileServer) Naming.lookup("//" + fileServerURL);

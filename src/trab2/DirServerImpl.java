@@ -73,7 +73,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   }
 
   public void makeDir(String name) throws SecurityException, RemoteException {
-    File dir = new File(name);
+    File dir = new File(basePathName, name);
     if (!dir.exists()) {
       dir.mkdir();
       System.out.println("created directory: " + name);
@@ -83,7 +83,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
 
   public String removeDir(String name) throws SecurityException, RemoteException {
     String result = "";
-    File dir = new File(name);
+    File dir = new File(basePathName, name);
     if (dir.exists()) {
       if (dir.list().length > 0) {
         result = "the directory is not empty!";
@@ -101,7 +101,7 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   }
 
   public String[] getAttr(String path) throws RemoteException, InfoNotFoundException {
-      File f = new File(path);
+      File f = new File(basePathName, path);
       if (f.exists())
         //return new FileInfo(path, f.length(), new Date(f.lastModified()), f.isFile());
         return null;
@@ -171,6 +171,12 @@ public class DirServerImpl extends UnicastRemoteObject implements IFileServer {
   public byte[] cpFromSync(String path) throws InfoNotFoundException, IOException {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public boolean isFile(String path) throws RemoteException, InfoNotFoundException {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }
